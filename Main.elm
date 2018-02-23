@@ -1,6 +1,8 @@
 module Main exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 
 
 -- model
@@ -51,8 +53,8 @@ type Msg
     | DeletePlay Play
 
 
-updeate : Msg -> Model -> Model
-updeate msg model =
+update : Msg -> Model -> Model
+update msg model =
     case msg of
         Input name ->
             { model | name = name }
@@ -61,6 +63,38 @@ updeate msg model =
             model
 
 
-main : Html msg
+main : Program Never Model Msg
 main =
-    text "Hello"
+    Html.beginnerProgram
+        { model = initModel
+        , view = view
+        , update = update
+        }
+
+
+
+-- view
+
+
+view : Model -> Html Msg
+view model =
+    div [ class "scoreboard" ]
+        [ h1 [] [ text "Score grr Keeper" ]
+        , playerForm model
+        , p [] [ text (toString model) ]
+        ]
+
+
+playerForm : Model -> Html Msg
+playerForm model =
+    Html.form [ onSubmit Save ]
+        [ input
+            [ type_ "text"
+            , placeholder "Add/Edit Player..."
+            , onInput Input
+            , value model.name
+            ]
+            []
+        , button [ type_ "submit" ] [ text "Save" ]
+        , button [ type_ "submit", onClick Cancel ] [ text "Cancel" ]
+        ]
