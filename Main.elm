@@ -145,10 +145,31 @@ view : Model -> Html Msg
 view model =
     div [ class "scoreboard" ]
         [ h1 [] [ text "Score grr Keeper" ]
+              , playerSection model
         , playerForm model
         , p [] [ text (toString model) ]
         ]
 
+playerSection : Model -> Html Msg
+playerSection model =
+    div []
+        [ playerListHeader
+        , playerList model
+        , pointTotal model
+        ]
+
+playerListHeader : Html Msg
+playerListHeader =
+    header []
+        [div [] [text "Name"]]
+
+playerList : Model -> Html Msg
+playerList model =
+    div[][]
+
+pointTotal : Model -> Html Msg
+pointTotal model =
+    div[][]
 
 playerForm : Model -> Html Msg
 playerForm model =
