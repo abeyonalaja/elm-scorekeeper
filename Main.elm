@@ -1,27 +1,5 @@
 module Main exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-
-
--- model
-
-
-type alias Model =
-    { players : List Player
-    , name : String
-    , playerId : Maybe Int
-    , plays : List Play
-    }
-
-
-type alias Player =
-    { id : Int
-    , name : String
-    , points : Int
-    }
-
 
 type alias Play =
     { id : Int
@@ -145,10 +123,11 @@ view : Model -> Html Msg
 view model =
     div [ class "scoreboard" ]
         [ h1 [] [ text "Score grr Keeper" ]
-              , playerSection model
+        , playerSection model
         , playerForm model
         , p [] [ text (toString model) ]
         ]
+
 
 playerSection : Model -> Html Msg
 playerSection model =
@@ -158,18 +137,48 @@ playerSection model =
         , pointTotal model
         ]
 
+
 playerListHeader : Html Msg
 playerListHeader =
     header []
-        [div [] [text "Name"]]
+        [ div [] [ text "Name" ] ]
+
 
 playerList : Model -> Html Msg
 playerList model =
-    div[][]
+    ul []
+        (List.map player model.players)
+
+
+player : Player -> Html Msg
+player player =
+    li []
+        [ i
+            [ class "edit"
+            , onClick (Edit player)
+            ]
+            []
+        , div []
+            [ text player.name ]
+        , button
+            [ type_ "button"
+            , onClick (Score player 2)
+            ]
+            [ text "2pt" ]
+        , bbutton
+            [ type_ "button"
+            , onClick (Score player 3)
+            ]
+            [ text "3pt" ]
+                , div  []
+                    [text (toString player points)]
+        ]
+
 
 pointTotal : Model -> Html Msg
 pointTotal model =
-    div[][]
+    div [] []
+
 
 playerForm : Model -> Html Msg
 playerForm model =
