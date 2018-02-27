@@ -10,10 +10,17 @@ import String
 
 
 type alias Model =
-    { player : List Player
+    { players : List Player
     , name : String
     , playerId : Maybe Int
     , plays : List Play
+    }
+
+
+type alias Player =
+    { id : Int
+    , name : String
+    , points : Int
     }
 
 
@@ -62,8 +69,34 @@ update msg model =
             else
                 save model
 
+        Score player points ->
+            score model player points
+        Edit player ->
+            {model | name = player.name, playerId = Just player.id}
+
         _ ->
             model
+
+
+score : Model -> Player -> Int -> Model
+score model scorer points =
+    let
+        newPlayers =
+            List.map
+                (\player ->
+                    if player.id == scorer.id then
+                        { player
+                            | points = player.points + points
+                        }
+                    else
+                        player
+                )
+                model.players
+
+        play =
+            Play (List.length model.plays) scorer.id scorer.name points
+    in
+        { model | players = newPlayers, plays = play :: model.plays }
 
 
 save : Model -> Model
@@ -157,7 +190,9 @@ playerSection model =
 playerListHeader : Html Msg
 playerListHeader =
     header []
-        [ div [] [ text "Name" ] ]
+        [ div [] [ text "Name" ]
+        , div [] [ text "Points" ]
+        ]
 
 
 playerList : Model -> Html Msg
@@ -181,19 +216,27 @@ player player =
             , onClick (Score player 2)
             ]
             [ text "2pt" ]
-        , bbutton
+        , button
             [ type_ "button"
             , onClick (Score player 3)
             ]
             [ text "3pt" ]
         , div []
-            [ text (toString player points) ]
+            [ text (toString player.points) ]
         ]
 
 
 pointTotal : Model -> Html Msg
 pointTotal model =
-    div [] []
+    let
+        total =
+            List.map .points model.plays
+                |> List.sum
+    in
+        footer []
+            [ div [] [ text "Total:" ]
+            , div [] [ text (toString total) ]
+            ]
 
 
 playerForm : Model -> Html Msg
