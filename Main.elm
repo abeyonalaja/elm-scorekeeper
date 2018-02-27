@@ -1,5 +1,21 @@
 module Main exposing (..)
 
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
+import String
+
+
+-- Model
+
+
+type alias Model =
+    { player : List Player
+    , name : String
+    , playerId : Maybe Int
+    , plays : List Play
+    }
+
 
 type alias Play =
     { id : Int
@@ -170,8 +186,8 @@ player player =
             , onClick (Score player 3)
             ]
             [ text "3pt" ]
-                , div  []
-                    [text (toString player points)]
+        , div []
+            [ text (toString player points) ]
         ]
 
 
